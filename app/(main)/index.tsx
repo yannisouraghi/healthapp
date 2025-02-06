@@ -2,9 +2,11 @@ import { useState, useEffect } from "react";
 import { View, FlatList, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { useFood } from "../provider/foodProvider";
+import { Entypo } from "react-native-vector-icons";
+import {Meal} from "../types/meal";  // Importer l'icône de profil
 
 export default function IndexPage() {
-    const { meals } = useFood(); // Get meals from context
+    const { meals } = useFood();
     const router = useRouter();
 
     const renderMealItem = ({ item }: { item: Meal }) => (
@@ -18,6 +20,13 @@ export default function IndexPage() {
                 )}
             />
             <Text style={styles.totalCalories}>Total Calories: {item.totalCalories} kcal</Text>
+
+            <TouchableOpacity
+                style={styles.detailsButton}
+                onPress={() => router.push(`/main/details/${item.id}`)}
+            >
+                <Text style={styles.detailsButtonText}>Voir les détails</Text>
+            </TouchableOpacity>
         </View>
     );
 
@@ -33,6 +42,13 @@ export default function IndexPage() {
                 onPress={() => router.push("/add")}
             >
                 <Text style={styles.addButtonText}>Ajouter un repas</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.profileButton}
+                onPress={() => router.push("/profile")}
+            >
+                <Entypo name="user" size={30} color="black" />
             </TouchableOpacity>
         </View>
     );
@@ -70,6 +86,26 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
     addButtonText: {
+        color: "white",
+        fontSize: 16,
+    },
+    profileButton: {
+        position: "absolute",
+        top: 20,
+        right: 20,
+        backgroundColor: "#f5f5f5",
+        padding: 10,
+        borderRadius: 25,
+        elevation: 5,
+    },
+    detailsButton: {
+        backgroundColor: "#28a745",
+        padding: 10,
+        marginTop: 10,
+        borderRadius: 8,
+        alignItems: "center",
+    },
+    detailsButtonText: {
         color: "white",
         fontSize: 16,
     },

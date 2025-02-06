@@ -26,7 +26,7 @@ export default function AddPage() {
     const fetchResults = async (text: string) => {
         try {
             const response = await fetch(
-                `https://api.edamam.com/auto-complete?app_id=e15518cc&app_key=a343a13b1a2b4d3cdea3c3bca1812029&q=${text}`
+                `https://api.edamam.com/auto-complete?app_id=b1d981d1&app_key=0003ca806689e130e73fd532b4ddbe9f&q=${text}`
             );
             const data = await response.json();
             setResults(data);
