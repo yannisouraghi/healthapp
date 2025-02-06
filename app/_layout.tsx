@@ -1,6 +1,8 @@
 import { Stack } from "expo-router";
 import { ClerkProvider, ClerkLoaded } from '@clerk/clerk-expo'
 import { tokenCache } from '../cache'
+import {ReactNode} from "react";
+import {FoodProvider} from "./provider/foodProvider";
 
 
 const publishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY!
@@ -15,9 +17,11 @@ export default function Layout() {
     return (
         <ClerkProvider tokenCache={tokenCache} publishableKey={publishableKey}>
             <ClerkLoaded>
-                <Stack>
-                    <Stack.Screen name="index" options={{ title: "Accueil" }} />
-                </Stack>
+                <FoodProvider>
+                    <Stack>
+                        <Stack.Screen name="index" options={{ title: "Accueil" }} />
+                    </Stack>
+                </FoodProvider>
             </ClerkLoaded>
         </ClerkProvider>
     );
