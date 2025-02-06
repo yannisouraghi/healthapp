@@ -5,6 +5,7 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useFood } from "../provider/foodProvider";
 import { Food } from "../types/food";
 import { Meal } from "../types/meal";
+import {useDebounce, useDebouncedCallback} from "use-debounce";
 
 export default function AddPage() {
     const [query, setQuery] = useState("");
@@ -14,21 +15,19 @@ export default function AddPage() {
     const router = useRouter();
     const { addFood, addMeal } = useFood();
     const [mealCounter, setMealCounter] = useState(1);
+    const appId = process.env.EXPO_PUBLIC_APPLICATION_ID;
+    const appKey = process.env.EXPO_PUBLIC_APPLICATION_KEY;
 
-    useEffect(() => {
-        if (query.trim().length > 0) {
-            fetchResults(query);
-        } else {
-            setResults([]);
-        }
-    }, [query]);
+
+    const callback = useDebouncedCallback((query : string) => fetchResults(query), 500)
 
     const fetchResults = async (text: string) => {
         try {
             const response = await fetch(
-                `https://api.edamam.com/auto-complete?app_id=b1d981d1&app_key=0003ca806689e130e73fd532b4ddbe9f&q=${text}`
+                `https://api.edamam.com/auto-complete?app_id=${appId}&app_key=${appKey}&q=${text}`
             );
             const data = await response.json();
+            console.log(data);
             setResults(data);
         } catch (error) {
             console.error("Erreur lors de la récupération des données :", error);
@@ -64,7 +63,10 @@ export default function AddPage() {
                 style={styles.searchInput}
                 placeholder="Rechercher un aliment..."
                 value={query}
-                onChangeText={setQuery}
+                onChangeText={(query: string) => {
+                    setQuery(query);
+                    callback(query);
+                }}
             />
 
             <FlatList

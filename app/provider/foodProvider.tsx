@@ -16,6 +16,8 @@ const FoodContext = createContext<FoodContextType | undefined>(undefined);
 export function FoodProvider({ children }: { children: React.ReactNode }) {
     const [foods, setFoods] = useState<Food[]>([]);
     const [meals, setMeals] = useState<Meal[]>([]);
+    const appId = process.env.EXPO_PUBLIC_APPLICATION_ID;
+    const appKey = process.env.EXPO_PUBLIC_APPLICATION_KEY;
 
     const loadData = async () => {
         try {
@@ -52,7 +54,7 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     const getFoodFromApi = async (foodName: string): Promise<Food | null> => {
         try {
             const response = await fetch(
-                `https://api.edamam.com/api/food-database/v2/parser?app_id=b1d981d1&app_key=0003ca806689e130e73fd532b4ddbe9f&ingr=${encodeURIComponent(foodName)}`
+                `https://api.edamam.com/api/food-database/v2/parser?app_id=${appId}&app_key=${appKey}&ingr=${encodeURIComponent(foodName)}`
             );
             const data = await response.json();
             if (data.hints && data.hints.length > 0) {
