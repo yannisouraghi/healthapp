@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Food } from "../types/food";
 import { Meal } from "../types/meal";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 interface FoodContextType {
     foods: Food[];
@@ -15,6 +16,38 @@ const FoodContext = createContext<FoodContextType | undefined>(undefined);
 export function FoodProvider({ children }: { children: React.ReactNode }) {
     const [foods, setFoods] = useState<Food[]>([]);
     const [meals, setMeals] = useState<Meal[]>([]);
+
+    const loadData = async () => {
+        try {
+            const storedFoods = await AsyncStorage.getItem("foods");
+            const storedMeals = await AsyncStorage.getItem("meals");
+            if (storedFoods) {
+                setFoods(JSON.parse(storedFoods));
+            }
+            if (storedMeals) {
+                setMeals(JSON.parse(storedMeals));
+            }
+        } catch (error) {
+            console.error("Erreur lors du chargement des données depuis AsyncStorage", error);
+        }
+    };
+
+    const saveData = async () => {
+        try {
+            await AsyncStorage.setItem("foods", JSON.stringify(foods));
+            await AsyncStorage.setItem("meals", JSON.stringify(meals));
+        } catch (error) {
+            console.error("Erreur lors de la sauvegarde des données dans AsyncStorage", error);
+        }
+    };
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        saveData();
+    }, [foods, meals]);
 
     const getFoodFromApi = async (foodName: string): Promise<Food | null> => {
         try {
@@ -63,7 +96,10 @@ export function FoodProvider({ children }: { children: React.ReactNode }) {
     };
 
     const removeMeal = (mealId: string) => {
-        setMeals(prevMeals => prevMeals.filter(meal => meal.id !== mealId));
+        setMeals(prevMeals => {
+            const updatedMeals = prevMeals.filter(meal => meal.id !== mealId);
+            return updatedMeals;
+        });
     };
 
     return (

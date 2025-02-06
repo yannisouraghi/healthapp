@@ -3,7 +3,7 @@ import { View, FlatList, Text, StyleSheet, TouchableOpacity } from "react-native
 import { useRouter } from "expo-router";
 import { useFood } from "../provider/foodProvider";
 import { Entypo } from "react-native-vector-icons";
-import {Meal} from "../types/meal";  // Importer l'icône de profil
+import {Meal} from "../types/meal";
 
 export default function IndexPage() {
     const { meals } = useFood();
@@ -11,7 +11,7 @@ export default function IndexPage() {
 
     const renderMealItem = ({ item }: { item: Meal }) => (
         <View style={styles.mealItem}>
-            <Text style={styles.mealTitle}>Repas {item.id}</Text>
+            <Text style={styles.mealTitle}> {item.id}</Text>
             <FlatList
                 data={item.foods}
                 keyExtractor={(food) => food.foodId}
@@ -23,7 +23,7 @@ export default function IndexPage() {
 
             <TouchableOpacity
                 style={styles.detailsButton}
-                onPress={() => router.push(`/main/details/${item.id}`)}
+                onPress={() => router.push(`/details/${item.id}`)}
             >
                 <Text style={styles.detailsButtonText}>Voir les détails</Text>
             </TouchableOpacity>
